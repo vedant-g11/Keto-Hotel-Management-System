@@ -5,10 +5,6 @@ This project aims to simplify hotel operations by providing tools for booking ma
 
 ---
 
-## 📂 Project Status  
-🚧 **Status:** In Progress  
-This project is currently under development.  
-Files will be uploaded soon as the project is ongoing.  
 
 ---
 
