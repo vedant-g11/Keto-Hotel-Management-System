@@ -16,14 +16,14 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: test_db
+          MYSQL_DATABASE: hotel_management_system
         ports:
           - 3306:3306
         options: >-
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=3
+          --health-retries=5
 
     steps:
       - name: Checkout repository
@@ -33,25 +33,53 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          extensions: mbstring, bcmath, intl, mysql
+          extensions: mbstring, bcmath, intl, pdo_mysql
           coverage: none
 
-      - name: Install dependencies
+      - name: Install Composer dependencies
         run: composer install --no-progress --prefer-dist --no-interaction
 
-      - name: Copy env file
-        run: cp .env.example .env
+      - name: Create .env file manually
+        run: |
+          echo "APP_NAME=Laravel" > .env
+          echo "APP_ENV=local" >> .env
+          echo "APP_KEY=" >> .env
+          echo "APP_DEBUG=true" >> .env
+          echo "APP_URL=http://localhost" >> .env
+          echo "DB_CONNECTION=mysql" >> .env
+          echo "DB_HOST=127.0.0.1" >> .env
+          echo "DB_PORT=3306" >> .env
+          echo "DB_DATABASE=hotel_management_system" >> .env
+          echo "DB_USERNAME=root" >> .env
+          echo "DB_PASSWORD=Beastkillz11082004" >> .env
 
       - name: Generate APP_KEY
         run: php artisan key:generate
 
       - name: Wait for MySQL
         run: |
-          for i in {1..30}; do
-            mysqladmin ping -h 127.0.0.1 -uroot -proot &>/dev/null && break
-            echo "Waiting for MySQL..."
-            sleep 1
+          echo "Waiting for MySQL to be ready..."
+          for i in {1..60}; do
+            if mysqladmin ping -h127.0.0.1 -uroot -proot --silent; then
+              echo "MySQL is ready!"
+              break
+            fi
+            echo "Still waiting ($i/60)..."
+            sleep 2
           done
+
+      - name: Configure MySQL user for external access
+        run: |
+          echo "Granting root access from any host..."
+          mysql -h 127.0.0.1 -uroot -proot -e "CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY 'Beastkillz11082004';"
+          mysql -h 127.0.0.1 -uroot -proot -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;"
+          mysql -h 127.0.0.1 -uroot -proot -e "FLUSH PRIVILEGES;"
+          mysql -h 127.0.0.1 -uroot -pBeastkillz11082004 -e "CREATE DATABASE IF NOT EXISTS hotel_management_system;"
+
+      - name: Clear and cache config
+        run: |
+          php artisan config:clear
+          php artisan config:cache
 
       - name: Run migrations
         run: php artisan migrate --force
