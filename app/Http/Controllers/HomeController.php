@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Room;
 use App\Models\Booking;
+use App\Models\Room;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function room_details($id){
+    public function room_details($id)
+    {
         $room = Room::find($id);
         if ($room) {
             return view('home.room_details', compact('room'));
@@ -17,11 +18,12 @@ class HomeController extends Controller
         }
     }
 
-    public function add_booking(Request $request, $id){
+    public function add_booking(Request $request, $id)
+    {
 
         $request->validate([
             'startdate' => 'required|date',
-            'enddate' => 'date|after:startdate'
+            'enddate' => 'date|after:startdate',
         ]);
 
         $data = new Booking;
@@ -31,13 +33,12 @@ class HomeController extends Controller
         $data->phone = $request->phone;
         $startdate = $request->startdate;
         $enddate = $request->enddate;
-        $isBooked = Booking::where('room_id','$id')
-        ->where('start_date','<=',$enddate)
-        ->where('end_date','>=',$startdate)->exists();
-        if($isBooked){
+        $isBooked = Booking::where('room_id', '$id')
+            ->where('start_date', '<=', $enddate)
+            ->where('end_date', '>=', $startdate)->exists();
+        if ($isBooked) {
             return redirect()->back()->with('message', 'Room is already Booked');
-        }
-        else {
+        } else {
             $data->start_date = $request->startdate;
             $data->end_date = $request->enddate;
             $data->save();
