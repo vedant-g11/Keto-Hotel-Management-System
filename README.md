@@ -5,14 +5,10 @@ This project aims to simplify hotel operations by providing tools for booking ma
 
 ---
 
-## 📂 Project Status  
-🚧 **Status:** In Progress  
-This project is currently under development.  
-Files will be uploaded soon as the project is ongoing.  
 
 ---
 
-## 🚀 Features (Planned & In Progress)  
+## 🚀 Features 
 - 📌 Room booking & availability management  
 - 📌 Customer registration & profile handling   
 - 📌 Admin dashboard for hotel staff  
@@ -23,7 +19,7 @@ Files will be uploaded soon as the project is ongoing.
 
 ## 🛠 Tech Stack  
 - **Backend:** [Laravel](https://laravel.com/) (PHP Framework)  
-- **Frontend:** Blade Template Engine, HTML, CSS, Bootstrap/Tailwind (planned)  
+- **Frontend:** Blade Template Engine, HTML, CSS, Bootstrap 
 - **Database:** MySQL  
 - **Version Control:** Git & GitHub  
 
