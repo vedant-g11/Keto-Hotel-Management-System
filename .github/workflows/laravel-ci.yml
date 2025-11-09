@@ -1,4 +1,4 @@
-name: Laravel CI
+name: Laravel CI (SQLite)
 
 on:
   push:
@@ -11,82 +11,40 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: Beastkillz11082004
-          MYSQL_DATABASE: hotel_management_system
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
-      - name: Checkout repository
+      - name: 🛒 Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup PHP
+      - name: ⚙️ Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          extensions: mbstring, bcmath, intl, pdo_mysql
+          extensions: mbstring, bcmath, intl, pdo_sqlite, sqlite
           coverage: none
 
-      - name: Install Composer dependencies
+      - name: 📦 Install Composer dependencies
         run: composer install --no-progress --prefer-dist --no-interaction
 
-      - name: Create .env file manually
+      - name: 🗄️ Setup SQLite database and env
         run: |
+          mkdir -p database
+          touch database/database.sqlite
           echo "APP_NAME=Laravel" > .env
           echo "APP_ENV=local" >> .env
           echo "APP_KEY=" >> .env
           echo "APP_DEBUG=true" >> .env
+          echo "DB_CONNECTION=sqlite" >> .env
+          echo "DB_DATABASE=$(pwd)/database/database.sqlite" >> .env
           echo "APP_URL=http://localhost" >> .env
-          echo "DB_CONNECTION=mysql" >> .env
-          echo "DB_HOST=127.0.0.1" >> .env
-          echo "DB_PORT=3306" >> .env
-          echo "DB_DATABASE=hotel_management_system" >> .env
-          echo "DB_USERNAME=root" >> .env
-          echo "DB_PASSWORD=Beastkillz11082004" >> .env
+          php artisan key:generate
 
-      - name: Generate APP_KEY
-        run: php artisan key:generate
-
-      - name: Wait for MySQL
-        run: |
-          echo "Waiting for MySQL to be ready..."
-          for i in {1..60}; do
-            if mysqladmin ping -h127.0.0.1 -uroot -proot --silent; then
-              echo "MySQL is ready!"
-              break
-            fi
-            echo "Still waiting ($i/60)..."
-            sleep 2
-          done
-
-      - name: Configure MySQL user for external access
-        run: |
-          echo "Granting root access from any host..."
-          mysql -h 127.0.0.1 -uroot -proot -e "CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY 'Beastkillz11082004';"
-          mysql -h 127.0.0.1 -uroot -proot -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;"
-          mysql -h 127.0.0.1 -uroot -proot -e "FLUSH PRIVILEGES;"
-          mysql -h 127.0.0.1 -uroot -pBeastkillz11082004 -e "CREATE DATABASE IF NOT EXISTS hotel_management_system;"
-
-      - name: Clear and cache config
+      - name: 🧹 Clear and cache config
         run: |
           php artisan config:clear
           php artisan config:cache
 
-      - name: Run migrations
+      - name: 🧱 Run migrations
         run: php artisan migrate --force
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: hotel_management_system
-          DB_USERNAME: root
-          DB_PASSWORD: Beastkillz11082004
+
+      - name: ✅ CI Complete
+        run: echo "🎉 Laravel build and migrations completed successfully!"
