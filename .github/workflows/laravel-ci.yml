@@ -15,7 +15,7 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: root
+          MYSQL_ROOT_PASSWORD: Beastkillz11082004
           MYSQL_DATABASE: hotel_management_system
         ports:
           - 3306:3306
