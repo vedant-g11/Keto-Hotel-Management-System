@@ -12,25 +12,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🛒 Checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: ⚙️ Setup PHP
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
           extensions: mbstring, bcmath, intl, pdo_sqlite, sqlite
           coverage: none
 
-      - name: 📦 Install Composer dependencies
+      - name: Install Composer dependencies
         run: composer install --no-progress --prefer-dist --no-interaction
 
-      - name: 🔍 Run Laravel Pint (Lint Check)
+      - name: Run Laravel Pint (Lint Check)
         run: vendor/bin/pint --test
         # --test means: check formatting but don't modify code
         # If Pint finds issues, CI will fail and show them in logs
 
-      - name: 🗄️ Setup SQLite database and env
+      - name: Setup SQLite database and env
         run: |
           mkdir -p database
           touch database/database.sqlite
@@ -43,13 +43,13 @@ jobs:
           echo "APP_URL=http://localhost" >> .env
           php artisan key:generate
 
-      - name: 🧹 Clear and cache config
+      - name: Clear and cache config
         run: |
           php artisan config:clear
           php artisan config:cache
 
-      - name: 🧱 Run migrations
+      - name: Run migrations
         run: php artisan migrate --force
 
-      - name: ✅ CI Complete
-        run: echo "🎉 Laravel build, lint, and migrations completed successfully!"
+      - name: CI Complete
+        run: echo " Laravel build, lint, and migrations completed successfully!"
