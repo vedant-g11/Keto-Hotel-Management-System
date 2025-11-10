@@ -6,7 +6,7 @@
             <div class="full">
                <div class="center-desk">
                   <div class="logo">
-                     <a href="{{url('/')}}"><img src="images/logo.png" alt="#" /></a>
+                     <a href="{{url('/home')}}"><img src="images/logo.png" alt="#" /></a>
                   </div>
                </div>
             </div>
@@ -23,16 +23,16 @@
                         <a class="nav-link" href="{{url('/home')}}">Home</a>
                      </li>
                      <li class="nav-item">
-                        <a class="nav-link" href="about.html">About</a>
+                        <a class="nav-link" href="">About</a>
                      </li>
                      <li class="nav-item">
-                        <a class="nav-link" href="room.html">Our Room</a>
+                        <a class="nav-link" href="">Our Room</a>
                      </li>
                      <li class="nav-item">
-                        <a class="nav-link" href="gallery.html">Gallery</a>
+                        <a class="nav-link" href="">Gallery</a>
                      </li>
                      <li class="nav-item">
-                        <a class="nav-link" href="contact.html">Contact Us</a>
+                        <a class="nav-link" href="">Contact Us</a>
                      </li>
 
                      @if (Route::has('login'))

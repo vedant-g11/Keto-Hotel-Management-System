@@ -1,78 +1,229 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     @include("admin.css")
 
-    <style type="text/css">
-        .table_deg{
-            border: 2px solid white;
-            margin: auto;
-            width: 50%;
-            text-align: center;
-            margin-top: 40px;
-        }
+    <style>
+      body {
+        background: #f4f6f9;
+      }
 
-        .th_deg{
-            background-color: skyblue;
-            padding: 15px;
-        }
+      .table-container {
+        max-width: 95%;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        padding: 20px;
+        transition: 0.3s;
+      }
 
-        tr{
-            border: 2px solid white;
-        }
+      .table-container:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      }
 
-        td{
-            padding: 10px;
-        }
+      h1 {
+        text-align: center;
+        font-weight: 700;
+        font-size: 28px;
+        margin-bottom: 25px;
+      }
 
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: center;
+      }
+
+      thead {
+        background-color: #007bff;
+        color: white;
+      }
+
+      th, td {
+        padding: 12px 10px;
+        vertical-align: middle;
+        border-bottom: 1px solid #ddd;
+      }
+
+      tr:hover {
+        background-color: #f1f9ff;
+        transition: 0.2s;
+      }
+
+      img {
+        width: 100px;
+        height: 80px;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+
+      .btn {
+        padding: 6px 12px;
+        font-weight: 600;
+        border-radius: 6px;
+      }
+
+      .btn-danger {
+        background-color: #e74c3c;
+        border: none;
+      }
+
+      .btn-danger:hover {
+        background-color: #c0392b;
+      }
+
+      .btn-warning {
+        background-color: #f39c12;
+        border: none;
+      }
+
+      .btn-warning:hover {
+        background-color: #d68910;
+      }
+
+      .search-bar {
+        text-align: right;
+        margin-bottom: 15px;
+      }
+
+      .search-bar input {
+        width: 250px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        transition: 0.2s;
+      }
+
+      .search-bar input:focus {
+        border-color: #007bff;
+        outline: none;
+      }
+
+      @media (max-width: 768px) {
+        table {
+          font-size: 13px;
+        }
+        img {
+          width: 70px;
+          height: 60px;
+        }
+      }
     </style>
   </head>
+
   <body>
     @include("admin.header")
     @include("admin.sidebar")
 
     <div class="page-content">
-        <div class="page-header">
-          <div class="container-fluid">
+      <div class="page-header">
+        <div class="container-fluid">
 
+          <div class="table-container">
+            <h1>Room Management</h1>
 
+            <div class="search-bar">
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Search rooms..."
+                onkeyup="filterTable()"
+              />
+            </div>
 
-            <table class="table_deg">
-                <tr>
-                    <th class="th_deg">Room Title</th>
-                    <th class="th_deg">Description</th>
-                    <th class="th_deg">Price</th>
-                    <th class="th_deg">Wifi</th>
-                    <th class="th_deg">Room Type</th>
-                    <th class="th_deg">Image</th>
-                    <th class="th_deg">Delete</th>
-                    <th class="th_deg">Update</th>
-                </tr>
+            <div class="table-responsive">
+              <table id="roomTable">
+                <thead>
+                  <tr>
+                    <th>Room Title</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Wifi</th>
+                    <th>Room Type</th>
+                    <th>Image</th>
+                    <th>Delete</th>
+                    <th>Update</th>
+                  </tr>
+                </thead>
 
-                @foreach($data as $data)
-                <tr>
-                    <td>{{$data -> room_title}}</td>
-                    <td>{!!Str::limit($data->description,100)!!}</td>
-                    <td>Rs.{{$data -> price}}</td>
-                    <td>{{$data -> wifi}}</td>
-                    <td>{{$data -> room_type}}</td>
+                <tbody>
+                  @foreach($data as $room)
+                  <tr>
+                    <td>{{ $room->room_title }}</td>
+                    <td>{!! Str::limit($room->description, 80) !!}</td>
+                    <td>₹{{ $room->price }}</td>
+                    <td>{{ ucfirst($room->wifi) }}</td>
+                    <td>{{ ucfirst($room->room_type) }}</td>
                     <td>
-                        <img src="room/{{$data -> image}}" alt="room image">
+                      <img src="room/{{ $room->image }}" alt="Room Image" />
                     </td>
                     <td>
-                        <a onclick="return confirm('Are you sure to delete this Room')" class="btn btn-danger" href="{{url('room_delete',$data->id)}}">Delete</a>
+                      <button
+                        class="btn btn-danger"
+                        onclick="confirmDelete('{{ url('room_delete', $room->id) }}')"
+                      >
+                        Delete
+                      </button>
                     </td>
                     <td>
-                        <a class="btn btn-warning" href="{{url('room_update',$data->id)}}">Update</a>
+                      <a class="btn btn-warning" href="{{ url('room_update', $room->id) }}">Update</a>
                     </td>
-                </tr>
-                @endforeach
-            </table>
-
-
+                  </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div>
           </div>
+
         </div>
+      </div>
     </div>
+
     @include("admin.footer")
+
+    <!-- SweetAlert CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+      // Sweet alert for delete confirmation
+      function confirmDelete(url) {
+        Swal.fire({
+          title: "Are you sure?",
+          text: "This room will be permanently deleted!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#e74c3c",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = url;
+          }
+        });
+      }
+
+      // Search filter
+      function filterTable() {
+        let input = document.getElementById("searchInput");
+        let filter = input.value.toLowerCase();
+        let table = document.getElementById("roomTable");
+        let tr = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < tr.length; i++) {
+          let tdArray = tr[i].getElementsByTagName("td");
+          let visible = false;
+
+          for (let td of tdArray) {
+            if (td.innerText.toLowerCase().includes(filter)) {
+              visible = true;
+              break;
+            }
+          }
+          tr[i].style.display = visible ? "" : "none";
+        }
+      }
+    </script>
   </body>
 </html>

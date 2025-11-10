@@ -4,7 +4,80 @@
     <base href="/public">
     @include('home.css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <style>
+        /* ✨ Enhanced room display styling */
+        .room-card {
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+            transition: 0.3s ease;
+            height: 100%;
+        }
+
+        .room-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .room-card img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            border-bottom: 3px solid #007bff;
+        }
+
+        .room-info {
+            padding: 25px;
+        }
+
+        .room-info h3 {
+            font-weight: 700;
+            font-size: 28px;
+            color: #222;
+            margin-bottom: 10px;
+        }
+
+        .room-info p {
+            font-size: 15px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .room-tags {
+            margin-top: 15px;
+        }
+
+        .room-tag {
+            display: inline-block;
+            background: #eef4ff;
+            color: #007bff;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-right: 8px;
+            font-weight: 600;
+        }
+
+        .room-price {
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #28a745;
+        }
+
+        @media (max-width: 768px) {
+            .room-card img {
+                height: 250px;
+            }
+            .room-info h3 {
+                font-size: 22px;
+            }
+        }
+    </style>
 </head>
+
 <body class="main-layout">
     <!-- loader -->
     <div class="loader_bg">
@@ -23,29 +96,34 @@
                 <div class="col-md-12">
                     <div class="titlepage">
                         <h2>Our Room</h2>
-                        <p>Lorem Ipsum available, but the majority have suffered </p>
+                        <p>Lorem Ipsum available, but the majority have suffered</p>
                     </div>
                 </div>
             </div>
 
             <div class="row">
-                <!-- Room details -->
-                <div class="col-md-8">
-                    <div id="serv_hover" class="room">
-                        <div style="padding: 20px" class="room_img">
-                            <figure><img style="height: 300px;width: 800px" src="room/{{$room->image}}" alt="#"/></figure>
-                        </div>
-                        <div class="bed_room">
+                <!-- ✨ Updated Room Section -->
+                <div class="col-md-8 mb-4">
+                    <div class="room-card">
+                        <img src="room/{{$room->image}}" alt="Room Image">
+                        <div class="room-info">
                             <h3>{{$room->room_title}}</h3>
-                            <p style="padding: 10px">{{$room->description}}</p>
-                            <h4 style="padding: 10px">Room Type: {{$room->room_type}}</h4>
-                            <h4 style="padding: 10px">Wifi: {{$room->wifi}}</h4>
-                            <h3 style="padding: 10px">Price: {{$room->price}}</h3>
+                            <p>{{$room->description}}</p>
+
+                            <div class="room-tags">
+                                <span class="room-tag">Type: {{$room->room_type}}</span>
+                                <span class="room-tag">WiFi: {{$room->wifi}}</span>
+                            </div>
+
+                            <div class="room-price">
+                                ₹{{$room->price}} / Night
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- ✨ End Updated Room Section -->
 
-                <!-- Booking form -->
+                <!-- Booking form (unchanged) -->
                 <div class="col-md-4">
                     <h1 style="font-size: 40px">Book Room</h1>
                     <div>
@@ -86,7 +164,7 @@
                             <input type="date" class="form-control" placeholder="End date" name="enddate" id="enddate">
 
                             <br>
-                            <button type="submit" class="btn btn-primary">Book Now</button>
+                            <button type="submit" class="btn btn-primary w-100">Book Now</button>
                         </form>
                     </div>
                 </div>
@@ -96,9 +174,8 @@
 
     <!-- footer -->
     @include('home.footer')
-    <!-- end footer -->
 
-    <!-- Load JS files in correct order -->
+    <!-- Load JS files -->
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
@@ -106,17 +183,14 @@
     <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
     <script src="js/custom.js"></script>
 
-    <!-- Your custom date script (AFTER jQuery) -->
     <script>
         $(function(){
             var dtToday = new Date();
             var month = dtToday.getMonth() + 1;
             var day = dtToday.getDate();
             var year = dtToday.getFullYear();
-
             if(month < 10) month = '0' + month;
             if(day < 10) day = '0' + day;
-
             var minDate = year + '-' + month + '-' + day;
             $('#startdate').attr('min', minDate);
             $('#enddate').attr('min', minDate);
