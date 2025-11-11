@@ -17,7 +17,7 @@ class AdminController extends Controller
                 $room = Room::all();
 
                 return view('home.index', compact('room'));
-            } elseif($usertype == 'admin') {
+            } elseif ($usertype == 'admin') {
                 return view('admin.index');
             } else {
                 return redirect()->back()->with('error', 'Unauthorized access');
@@ -53,7 +53,7 @@ class AdminController extends Controller
             $imagename = time().'.'.$image->getClientOriginalExtension();
             $request->image->move('room', $imagename);
             $data->image = $imagename;
-        } else  {
+        } else {
             return redirect()->back()->with('error', 'Image is required');
         }
 
