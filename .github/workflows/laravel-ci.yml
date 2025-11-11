@@ -27,9 +27,7 @@ jobs:
 
       - name: Run Laravel Pint (Lint Check)
         run: vendor/bin/pint --test
-        # --test means: check formatting but don't modify code
-        # If Pint finds issues, CI will fail and show them in logs
-
+        
       - name: Setup SQLite database and env
         run: |
           mkdir -p database
